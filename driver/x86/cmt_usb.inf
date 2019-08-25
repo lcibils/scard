@@ -1,0 +1,168 @@
+;/*+++
+;
+;
+;Module Name:
+;
+;    cmt_usb.INF
+;
+;Abstract:
+; Installation INF for the Cross Match Technologies USB Driver for Windows 2000, XP, Vista and Windows 7
+; Copyright (c) 2010 Cross Match Technologies, Inc
+;
+;---*/
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=CMT_USB
+ClassGuid={EE52AD62-4CC8-4b0e-AFA1-675B47E0E06D}
+;ClassGuid={36FC9E60-C465-11CF-8056-444553540000}
+Provider=%MFGNAME%
+DriverVer=02/18/2010,6.1.7600.16385
+;---Uncomment and complete below to support WHQL submission---;
+CatalogFile=cmt_usb.cat
+;-------------------------------------------------------------;
+
+;===============================================================;
+; Class section
+;===============================================================;
+
+[ClassInstall32]
+Addreg=CMatchClassReg
+
+[CMatchClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+;===============================================================;
+; Device section
+;===============================================================;
+
+[Manufacturer]
+%MFGNAME%=CROSSMATCH,NTx86
+
+;===============================================================;
+; Supported VID/PID
+;===============================================================;
+; For Win2K
+[CROSSMATCH]
+; VID / PID for Cross Match Devices
+%Verifier_300LC2%   = CROSSMATCH.Dev, USB\VID_080B&PID_0030
+%Verifier_310%      = CROSSMATCH.Dev, USB\VID_080B&PID_0031
+%ISCAN_2%           = CROSSMATCH.Dev, USB\VID_080B&PID_0033
+%Verifier_310LC%    = CROSSMATCH.Dev, USB\VID_080B&PID_0034
+%IrisSeek%          = CROSSMATCH.Dev, USB\VID_080B&PID_0037
+%Verifier%          = CROSSMATCH.Dev, USB\VID_080B&PID_0038
+%ISCAN_3%           = CROSSMATCH.Dev, USB\VID_080B&PID_0039
+%MugshotPrototype%  = CROSSMATCH.Dev, USB\VID_080B&PID_0050
+%MugshotProduction% = CROSSMATCH.Dev, USB\VID_080B&PID_0051
+
+; After ReEnumeration Cross Match driver.
+%CMT_EEPROM_Missing%               = CROSSMATCH.Dev, USB\VID_04B4&PID_8613
+%USB\VID_080B&PID_0102.DeviceDesc% = CROSSMATCH.Dev, USB\VID_080B&PID_0102
+%USB\VID_080B&PID_0103.DeviceDesc% = CROSSMATCH.Dev, USB\VID_080B&PID_0103
+%USB\VID_080B&PID_0104.DeviceDesc% = CROSSMATCH.Dev, USB\VID_080B&PID_0104
+
+
+; For XP and later
+[CROSSMATCH.NTx86]
+
+; VID / PID for Cross Match Devices
+%Verifier_300LC2%   = CROSSMATCH.Dev, USB\VID_080B&PID_0030
+%Verifier_310%      = CROSSMATCH.Dev, USB\VID_080B&PID_0031
+%ISCAN_2%           = CROSSMATCH.Dev, USB\VID_080B&PID_0033
+%Verifier_310LC%    = CROSSMATCH.Dev, USB\VID_080B&PID_0034
+%IrisSeek%          = CROSSMATCH.Dev, USB\VID_080B&PID_0037
+%Verifier%          = CROSSMATCH.Dev, USB\VID_080B&PID_0038
+%ISCAN_3%           = CROSSMATCH.Dev, USB\VID_080B&PID_0039
+%MugshotPrototype%  = CROSSMATCH.Dev, USB\VID_080B&PID_0050
+%MugshotProduction% = CROSSMATCH.Dev, USB\VID_080B&PID_0051
+
+
+; After ReEnumeration Cross Match driver.
+%CMT_EEPROM_Missing%               = CROSSMATCH.Dev, USB\VID_04B4&PID_8613
+%USB\VID_080B&PID_0102.DeviceDesc% = CROSSMATCH.Dev, USB\VID_080B&PID_0102
+%USB\VID_080B&PID_0103.DeviceDesc% = CROSSMATCH.Dev, USB\VID_080B&PID_0103
+%USB\VID_080B&PID_0104.DeviceDesc% = CROSSMATCH.Dev, USB\VID_080B&PID_0104
+
+[CROSSMATCH.Dev.NT]
+CopyFiles=CROSSMATCH.Files.Ext
+
+[CROSSMATCH.Dev.NT.Services]
+Addservice = CROSSMATCH, 0x00000002, CROSSMATCH.AddService
+
+[CROSSMATCH.AddService]
+DisplayName    = %CMatch.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\cmt_usb.sys
+AddReg         = CROSSMATCH.AddReg
+LoadOrderGroup = Base
+
+[CROSSMATCH.AddReg]
+HKR,"Parameters","MaximumTransferSize",0x10001,4096
+HKR,"Parameters","DebugLevel",0x10001,0
+HKR, Parameters\Wdf, VerboseOn,       0x00010001, 0
+HKR, Parameters\Wdf, VerifierOn,      0x00010001, 0
+HKR, Parameters\Wdf, DbgBreakOnError, 0x00010001, 0
+
+[CROSSMATCH.Files.Ext]
+cmt_usb.sys
+
+[SourceDisksNames]
+1=%CMT_USB_INSTALL%,,,
+
+[SourceDisksFiles]
+cmt_usb.sys = 1
+
+;===============================================================;
+; WDF Coinstaller installation
+;===============================================================;
+
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[CROSSMATCH.Dev.NT.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller01009.dll
+
+[SourceDisksFiles]
+WdfCoInstaller01009.dll = 1 ; make sure the number matches with SourceDisksNames
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller01009.dll,WdfCoInstaller"
+
+[CROSSMATCH.Dev.NT.Wdf]
+KmdfService = CROSSMATCH, CROSSMATCH_wdfsect
+
+[CROSSMATCH_wdfsect]
+KmdfLibraryVersion = 1.9
+
+;===============================================================;
+; Strings
+;===============================================================;
+
+[Strings]
+MFGNAME          = "Cross Match Technologies, Inc."
+CMT_USB_INSTALL  = "Cross Match USB Driver Installation Disk"
+CMatch.SvcDesc   = "Cross Match Technologies Verifier USB Driver"
+ClassName        = "Cross Match Biometric Device(s)"
+Verifier_300LC2  = "Cross Match Technologies Verifier 300LC 2.0"
+Verifier_310     = "Cross Match Technologies Verifier 310"
+IrisSeek         = "Cross Match Technologies Iris Seek"
+ISCAN_2          = "Cross Match Technologies I Scan 2"
+ISCAN_3          = "Cross Match Technologies I Scan"
+Verifier         = "Cross Match Technologies Verifier"
+Verifier_310LC   = "Cross Match Technologies Verifier 310LC"
+MugshotPrototype = "Cross Match Technologies Iron Man Mug Shot Prototype"
+MugshotProduction = "Cross Match Technologies Iron Man Mug Shot"
+CMT_EEPROM_Missing = "CMT EZ-USB - EEPROM Missing (cmt_usb.sys)"
+USB\VID_080B&PID_0102.DeviceDesc = "Cross Match Technologies USB 2.0 scanner! (After ReNumeration)"
+USB\VID_080B&PID_0103.DeviceDesc = "Cross Match Technologies USB 2.0 Iris scanner! (After ReNumeration)"
+USB\VID_080B&PID_0104.DeviceDesc = "Cross Match Technologies Iron Man Mug Shot (After ReNumeration)"

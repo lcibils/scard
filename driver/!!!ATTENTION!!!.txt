@@ -1,0 +1,11 @@
+EXTREMELY IMPORTANT!
+
+Run dpinst.exe BEFORE connecting the Cross Match Verifier the first time!
+
+Otherwise the USB drivers may not install correctly.
+
+The scanners perform a calibration phase before each scan to enable superior image quality. Do not place the finger on the scanner plate during the first flash of the red scanner light! Otherwise, repeat the capturing.
+
+
+Bromba GmbH
+2010-07-23
